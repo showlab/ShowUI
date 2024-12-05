@@ -138,7 +138,7 @@ def handle_vote(vote_type, image_path, query, action_generated):
     return record_vote(vote_type, image_path, query, action_generated)
 
 # Load logo and encode to Base64
-with open("./assets/showui.png", "rb") as image_file:
+with open("./assets/showui.jpg", "rb") as image_file:
     base64_image = base64.b64encode(image_file.read()).decode("utf-8")
 
 
