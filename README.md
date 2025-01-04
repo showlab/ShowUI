@@ -23,6 +23,7 @@ Open-source, End-to-end, Vision-Language-Action model for GUI Agent & Computer U
 > <br>Show Lab @ National University of Singapore, Microsoft<br>
 
 ## 🔥 Update
+- [x] [2024.1.4] Update [`ShowUI-web`](https://huggingface.co/datasets/showlab/ShowUI-web) dataset.
 - [x] [2024.12.28] Update GPT-4o annotation recaptioning scripts.
 - [x] [2024.12.27] Update training codes and instructions.
 - [x] [2024.12.23] Update `showui` for UI-guided token selection implementation.
@@ -30,7 +31,7 @@ Open-source, End-to-end, Vision-Language-Action model for GUI Agent & Computer U
 - [x] [2024.12.9] Support int8 Quantization.
 - [x] **[2024.12.5] Major Update: ShowUI is integrated into [OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-ov-file) for local run!**
 - [x] [2024.12.1] We support iterative refinement to improve grounding accuracy. Try it at [HF Spaces demo](https://huggingface.co/spaces/showlab/ShowUI).
-- [x] [2024.11.27] We release the [arXiv paper](https://arxiv.org/abs/2411.17465), [HF Spaces demo](https://huggingface.co/spaces/showlab/ShowUI) and [`ShowUI-desktop-8K`](https://huggingface.co/datasets/showlab/ShowUI-desktop-8K).
+- [x] [2024.11.27] We release the [arXiv paper](https://arxiv.org/abs/2411.17465), [HF Spaces demo](https://huggingface.co/spaces/showlab/ShowUI) and [`ShowUI-desktop`](https://huggingface.co/datasets/showlab/ShowUI-desktop).
 - [x] [2024.11.16] [`showlab/ShowUI-2B`](https://huggingface.co/showlab/ShowUI-2B) is available at huggingface.
 
 ## 🖥️ Computer Use
