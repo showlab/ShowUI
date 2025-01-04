@@ -23,7 +23,7 @@ Open-source, End-to-end, Vision-Language-Action model for GUI Agent & Computer U
 > <br>Show Lab @ National University of Singapore, Microsoft<br>
 
 ## 🔥 Update
-- [x] [2024.1.4] Update [`ShowUI-web`](https://huggingface.co/datasets/showlab/ShowUI-web) dataset.
+- [x] [2024.1.4] We release the [`ShowUI-web`](https://huggingface.co/datasets/showlab/ShowUI-web) dataset.
 - [x] [2024.12.28] Update GPT-4o annotation recaptioning scripts.
 - [x] [2024.12.27] Update training codes and instructions.
 - [x] [2024.12.23] Update `showui` for UI-guided token selection implementation.
