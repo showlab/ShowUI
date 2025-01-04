@@ -15,7 +15,7 @@ Download grounding evaluation dataset -- [ScreenSpot](https://huggingface.co/dat
 You can use huggingface-cli to download these datasets easily.
 ```
 cd $_DATA_DIR
-huggingface-cli download showlab/ShowUI-desktop-8K --repo-type dataset --local-dir .
+huggingface-cli download showlab/ShowUI-desktop --repo-type dataset --local-dir .
 huggingface-cli download KevinQHLin/ScreenSpot --repo-type dataset --local-dir .
 ```
 
