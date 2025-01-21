@@ -146,7 +146,7 @@ class AitwDataset(torch.utils.data.Dataset):
         action_prefix = []
         for i, step in enumerate(step_history[-num_history:]):
             action = get_answer(step)
-            max_pixels = max(self.min_pixels, self.max_pixels * decay_factor ** (num_history - i))=
+            max_pixels = max(self.min_pixels, self.max_pixels * decay_factor ** (num_history - i))
             if interleaved_history == 'vvtt':
                 action_prefix.append({"type": "image", "image": image_list[i], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
             elif interleaved_history == 'ttvv':
