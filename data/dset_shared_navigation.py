@@ -226,7 +226,7 @@ class NavigationDataset(torch.utils.data.Dataset):
 
         task = item['task']
         answer_dict = get_answer_by_list(item['step'])
-        action_history = self.get_history_qwen(image_list, item, self.num_history, self.interleaved_history, self.decay_factor) # if item['step_history'] != [] else image_list
+        action_history = self.get_history_qwen(image_list, item, self.num_history, self.interleaved_history) # if item['step_history'] != [] else image_list
 
         item['anno_id'] = idx
         item['answer'] = answer_dict
