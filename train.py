@@ -87,7 +87,8 @@ def parse_args(args):
     parser.add_argument("--liger_kernel", action="store_true", default=False)
 
     # Model & Ckpt
-    parser.add_argument("--model_id", default="showlab/ShowUI-2B", choices=["showlab/ShowUI-2B", "Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct"])
+    parser.add_argument("--model_id", default="showlab/ShowUI-2B", choices=["showlab/ShowUI-2B", "Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", \
+                                                                            "Qwen/Qwen2.5-VL-3B-Instruct"])
     parser.add_argument("--version", default="showlab/ShowUI-2B")
     parser.add_argument("--max_new_tokens", default=128, type=int, help="max. generated token length")
     parser.add_argument("--local_weight", action="store_true", default=False)
@@ -249,7 +250,7 @@ def main(args):
     # Create processor
     if args.model_id in ["showlab/ShowUI-2B"]:
         from model.showui.processing_showui import ShowUIProcessor
-
+        model_id = args.model_id
         if args.local_weight:
             model_url = f"{args.local_weight_dir}/{model_id}"
         else:
@@ -264,7 +265,7 @@ def main(args):
                                                     uimask_pre=args.uimask_pre, uimask_ratio=args.uimask_ratio, uimask_rand=args.uimask_rand
                                                     )
     elif args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct"]:
-        from model.qwen2_vl.processing_qwen2_vl import Qwen2VLProcessor
+        from model.qwen2_vl.processing_qwen2_vl import Qwen2VLProcessor  # AutoProcessor
         from model.qwen2_vl.modeling_qwen2_vl import Qwen2VLForConditionalGeneration
         model_id = args.model_id.replace("Qwen/", "")
         if args.local_weight:
@@ -272,11 +273,26 @@ def main(args):
         else:
             model_url = args.model_id
         processor = Qwen2VLProcessor.from_pretrained(
-                                                    model_url,
+                                                    "Qwen/Qwen2-VL-2B-Instruct",
                                                     min_pixels=args.min_visual_tokens *28*28, 
                                                     max_pixels=args.max_visual_tokens *28*28,
                                                     model_max_length=args.model_max_length,
                                                    )
+    elif args.model_id in ["Qwen/Qwen2.5-VL-3B-Instruct", "Qwen/Qwen2.5-VL-7B-Instruct"]:
+        from model.qwen2_5_vl.processing_qwen2_5_vl import Qwen2_5_VLProcessor
+        from model.qwen2_5_vl.modeling_qwen2_5_vl import Qwen2_5_VLForConditionalGeneration
+        model_id = args.model_id.replace("Qwen/", "")
+        if args.local_weight:
+            model_url = f"{args.local_weight_dir}/{model_id}"
+        else:
+            model_url = args.model_id
+        processor = Qwen2_5_VLProcessor.from_pretrained(
+                                                        model_url,
+                                                        min_pixels=args.min_visual_tokens *28*28, 
+                                                        max_pixels=args.max_visual_tokens *28*28,
+                                                        model_max_length=args.model_max_length,
+                                                        )
+        
     CHAT_TEMPLATE = "{% set image_count = namespace(value=0) %}{% set video_count = namespace(value=0) %}{% for message in messages %}<|im_start|>{{ message['role'] }}\n{% if message['content'] is string %}{{ message['content'] }}<|im_end|>\n{% else %}{% for content in message['content'] %}{% if content['type'] == 'image' or 'image' in content or 'image_url' in content %}{% set image_count.value = image_count.value + 1 %}{% if add_vision_id %}Picture {{ image_count.value }}: {% endif %}<|vision_start|><|image_pad|><|vision_end|>{% elif content['type'] == 'video' or 'video' in content %}{% set video_count.value = video_count.value + 1 %}{% if add_vision_id %}Video {{ video_count.value }}: {% endif %}<|vision_start|><|video_pad|><|vision_end|>{% elif 'text' in content %}{{ content['text'] }}{% endif %}{% endfor %}<|im_end|>\n{% endif %}{% endfor %}{% if add_generation_prompt %}<|im_start|>assistant\n{% endif %}"
     processor.chat_template = CHAT_TEMPLATE
     processor.tokenizer.chat_template = CHAT_TEMPLATE
@@ -328,6 +344,16 @@ def main(args):
         model = Qwen2VLForConditionalGeneration.from_pretrained(
             model_url,
             torch_dtype=torch_dtype,
+            low_cpu_mem_usage=True,
+            _attn_implementation=args.attn_imple,
+            quantization_config=bnb_config,
+            device_map=f"cuda:{args.local_rank}",
+        )
+    elif args.model_id in ["Qwen/Qwen2.5-VL-3B-Instruct", "Qwen/Qwen2.5-VL-7B-Instruct"]:
+        from model.qwen2_5_vl.modeling_qwen2_5_vl import Qwen2_5_VLForConditionalGeneration
+
+        model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
+            model_url,
             low_cpu_mem_usage=True,
             _attn_implementation=args.attn_imple,
             quantization_config=bnb_config,
