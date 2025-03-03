@@ -10,7 +10,7 @@ pip install -r requirements.txt --user
 
 ## 📦Setup Datasets
 ### Grounding datasets
-- Download grounding training dataset -- [ShowUI-desktop](https://huggingface.co/datasets/showlab/ShowUI-desktop-8K) and [ShowUI-Web](https://huggingface.co/datasets/showlab/ShowUI-web)
+- Download grounding training dataset -- [ShowUI-desktop](https://huggingface.co/datasets/showlab/ShowUI-desktop-8K) and [ShowUI-Web](https://huggingface.co/datasets/showlab/ShowUI-web). They may have missed some images. Please download the zip file from [images.tar.gz](https://huggingface.co/datasets/showlab/ShowUI-web/blob/main/images.tar.gz) and unzip it to access them.
 - Download [AMEX](https://huggingface.co/datasets/Yuxiang007/AMEX) then use our `prepare/hf_amex.py` to create metadata.
 - Download grounding evaluation dataset -- [ScreenSpot](https://huggingface.co/datasets/KevinQHLin/ScreenSpot)
 
