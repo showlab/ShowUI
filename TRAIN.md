@@ -141,7 +141,47 @@ If you want to evaluate on your own setting, you need to define the evaluation f
 You should able monitor the training information in wandb panel.
 
 ## 〽️Start Navigation Training
-TBD
+The code below utilizes GUI-Act for pre-training, followed by evaluation on AITW. 
+We have set `num_history` to 2 with `interleaved_history='tttt'`. 
+
+If you have access to greater GPU memory, feel free to switch to `vtvt` and increase the history length.
+
+```
+deepspeed --include localhost:1 --master_port 5678 train.py \
+  --wandb_key=$WANDB_KEY \
+  --model_id='showlab/ShowUI-2B' \
+  --version='showlab/ShowUI-2B' \
+  --dataset_dir=$_DATA_DIR \
+  --log_base_dir=$_SAVE_DIR \
+  --epochs=50 \
+  --steps_per_epoch=100 \
+  --batch_size=1 \
+  --grad_accumulation_steps=2 \
+  --model_max_length=8192 \
+  --exp_id="debug" \
+  --train_ratio="1,1,1"  \
+  --train_dataset="guiact,guiact,guiact"  \
+  --train_json="hf_train_smartphone,hf_train_web-multi,hf_train_web-single"   \
+  --val_dataset="aitw"  \
+  --precision="bf16" \
+  --attn_imple="sdpa" \
+  --workers=0 \
+  --lora_r=32 \
+  --lora_alpha=64  \
+  --min_visual_tokens=256  \
+  --max_visual_tokens=1344  \
+  --num_turn=100 \
+  --random_sample \
+  --record_sample \
+  --lr=0.0001 \
+  --uniform_prompt  \
+  --ds_zero="zero2" \
+  --gradient_checkpointing  \
+  --lm_skip_ratio=0.5   \
+  --lm_skip_layer='[1,28,0]'    \
+  --num_history=2    \
+  --interleaved_history='tttt'
+```
 
 ## ⬇️Save Model Checkpoints
 Once you finished the training, you can use the following cmd to save the model checkpoint.
