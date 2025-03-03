@@ -144,7 +144,8 @@ You should able monitor the training information in wandb panel.
 The code below utilizes GUI-Act for pre-training, followed by evaluation on AITW.
 We have set `num_history` to 2 with `interleaved_history='tttt'`. 
 
-You can easily replace the training `train_dataset` / validation dataset `val_dataset` to `aitw` or `mind2web`. 
+You can easily replace the training `train_dataset` / validation dataset `val_dataset` to `aitw` or `mind2web`, and replace the `train_json` or `val_json` if needed.
+
 If you have access to greater GPU memory, feel free to switch to `vtvt` and increase the history length.
 
 ```
