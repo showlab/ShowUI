@@ -120,7 +120,7 @@ class HybridDataset(torch.utils.data.Dataset):
                         dataset=dataset,
                         json_data=json_split,
                         processor=processor,
-                        inference=False,
+                        inference=inference,
                         args_dict=vars(args),
                         )
                 )
@@ -131,7 +131,7 @@ class HybridDataset(torch.utils.data.Dataset):
                         dataset=dataset,
                         json_data=json_split,
                         processor=processor,
-                        inference=False,
+                        inference=inference,
                         args_dict=vars(args),
                         )
                 )
@@ -142,7 +142,7 @@ class HybridDataset(torch.utils.data.Dataset):
                         dataset=dataset,
                         json_data=json_split,
                         processor=processor,
-                        inference=False,
+                        inference=inference,
                         args_dict=vars(args),
                         )
                 )
