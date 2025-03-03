@@ -141,9 +141,10 @@ If you want to evaluate on your own setting, you need to define the evaluation f
 You should able monitor the training information in wandb panel.
 
 ## 〽️Start Navigation Training
-The code below utilizes GUI-Act for pre-training, followed by evaluation on AITW. 
+The code below utilizes GUI-Act for pre-training, followed by evaluation on AITW.
 We have set `num_history` to 2 with `interleaved_history='tttt'`. 
 
+You can easily replace the training `train_dataset` / validation dataset `val_dataset` to `aitw` or `mind2web`. 
 If you have access to greater GPU memory, feel free to switch to `vtvt` and increase the history length.
 
 ```
@@ -163,6 +164,7 @@ deepspeed --include localhost:1 --master_port 5678 train.py \
   --train_dataset="guiact,guiact,guiact"  \
   --train_json="hf_train_smartphone,hf_train_web-multi,hf_train_web-single"   \
   --val_dataset="aitw"  \
+  --val_json="hf_test"    \
   --precision="bf16" \
   --attn_imple="sdpa" \
   --workers=0 \
