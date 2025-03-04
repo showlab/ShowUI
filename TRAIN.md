@@ -208,6 +208,8 @@ The code below utilizes downstream training data for fine-tuning our ShowUI.
 To ensure a better performance, we enlarge the `min_visual_tokens` to 1344 and `max_visual_tokens` to 1680 during fine-tuning stage.
 
 You can easily replace the training `train_dataset` / validation dataset `val_dataset` to `aitw` or `mind2web`, and replace the `train_json` or `val_json` if needed.
+- For Mind2Web, `train_dataset=mind2web`, `train_json='hf_train'` and `val_json='hf_test_full'`;
+- For AITW, `train_dataset=aitw`, `train_json='hf_train'` and `val_json='hf_test'`.
 
 ```
 deepspeed --include localhost:1 --master_port 5678 train.py \
