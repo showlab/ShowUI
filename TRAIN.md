@@ -142,12 +142,11 @@ You should able monitor the training information in wandb panel.
 
 ## 〽️Start Navigation Training
 The code below utilizes GUI-Act for pre-training, followed by evaluation on AITW.
-We have set `num_history` to 2 with `interleaved_history='tttt'`. 
+We have set `num_history` to 2 with `interleaved_history='tttt'`, `min_visual_tokens=1344`.
 
 You can easily replace the training `train_dataset` / validation dataset `val_dataset` to `aitw` or `mind2web`, and replace the `train_json` or `val_json` if needed.
 
 If you have access to greater GPU memory, feel free to switch to `vtvt` and increase the history length.
-
 ```
 deepspeed --include localhost:1 --master_port 5678 train.py \
   --wandb_key=$WANDB_KEY \
@@ -171,8 +170,8 @@ deepspeed --include localhost:1 --master_port 5678 train.py \
   --workers=0 \
   --lora_r=32 \
   --lora_alpha=64  \
-  --min_visual_tokens=256  \
-  --max_visual_tokens=1344  \
+  --min_visual_tokens=1344  \
+  --max_visual_tokens=1680  \
   --num_turn=100 \
   --random_sample \
   --record_sample \
