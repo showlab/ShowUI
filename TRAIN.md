@@ -187,7 +187,7 @@ deepspeed --include localhost:1 --master_port 5678 train.py \
 ### **Fine-tuned on Downstream Tasks**
 The code below utilizes downstream training data for fine-tuning our ShowUI.
 
-To ensure a better performance, we enlarge the `min_visual_tokens` to 1344 in fine-tuning stage.
+To ensure a better performance, we enlarge the `min_visual_tokens` to 1344 and `max_visual_tokens` to 1680 during fine-tuning stage.
 
 You can easily replace the training `train_dataset` / validation dataset `val_dataset` to `aitw` or `mind2web`, and replace the `train_json` or `val_json` if needed.
 
