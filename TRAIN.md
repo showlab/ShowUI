@@ -250,7 +250,7 @@ deepspeed --include localhost:1 --master_port 5678 train.py \
   --interleaved_history='tttt'
 ```
 
-## Multi-Task Co-Training
+## 〽️Multi-Task Co-Training
 Below is the instruction to use both grounding and navigation data for co-training. Training on multiple nodes (e.g. 32 GPUs) is recommended.
 
 You can easily add or delete any training data `train_dataset` and adjust the `train_ratio`.
