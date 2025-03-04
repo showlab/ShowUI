@@ -11,7 +11,6 @@ pip install -r requirements.txt --user
 ## 📦Setup Datasets
 ### Grounding datasets
 - Download grounding training dataset -- [ShowUI-desktop](https://huggingface.co/datasets/showlab/ShowUI-desktop-8K) and [ShowUI-Web](https://huggingface.co/datasets/showlab/ShowUI-web).
-> They may have missed some images in ShowUI-web. Please download the zip file from [images.tar.gz](https://huggingface.co/datasets/showlab/ShowUI-web/blob/main/images.tar.gz) and unzip it to access them.
 - Download [AMEX](https://huggingface.co/datasets/Yuxiang007/AMEX) then use our `prepare/hf_amex.py` to create metadata.
 - Download grounding evaluation dataset -- [ScreenSpot](https://huggingface.co/datasets/KevinQHLin/ScreenSpot)
 
@@ -111,7 +110,7 @@ deepspeed --include localhost:1 --master_port 5678 train.py \
   --model_max_length=8192 \
   --exp_id="debug" \
   --train_ratio="1"  \
-  --train_dataset="showui"  \
+  --train_dataset="showui-desktop"  \
   --train_json="hf_train"   \
   --val_dataset="screenspot"  \
   --precision="bf16" \
@@ -194,8 +193,8 @@ You can easily replace the training `train_dataset` / validation dataset `val_da
 ```
 deepspeed --include localhost:1 --master_port 5678 train.py \
   --wandb_key=$WANDB_KEY \
-  --model_id='Qwen/Qwen2-VL-2B-Instruct' \
-  --version='Qwen/Qwen2-VL-2B-Instruct' \
+  --model_id='showlab/ShowUI-2B' \
+  --version='showlab/ShowUI-2B' \
   --dataset_dir=$_DATA_DIR \
   --log_base_dir=$_SAVE_DIR \
   --epochs=50 \
@@ -226,6 +225,49 @@ deepspeed --include localhost:1 --master_port 5678 train.py \
   --lm_skip_ratio=0.5   \
   --lm_skip_layer='[1,28,0]'    \
   --num_history=4    \
+  --interleaved_history='tttt'
+```
+
+## Multi-Task Co-Training
+Below is the instruction to use both grounding and navigation data for co-training. Training on multiple nodes (e.g. 32 GPUs) is recommended.
+
+You can easily add or delete any training data `train_dataset` and adjust the `train_ratio`.
+
+```
+deepspeed --include localhost:1 --master_port 5678 train.py \
+  --wandb_key=$WANDB_KEY \
+  --model_id='Qwen/Qwen2-VL-2B-Instruct' \
+  --version='Qwen/Qwen2-VL-2B-Instruct' \
+  --dataset_dir=$_DATA_DIR \
+  --log_base_dir=$_SAVE_DIR \
+  --epochs=50 \
+  --steps_per_epoch=100 \
+  --batch_size=1 \
+  --grad_accumulation_steps=2 \
+  --model_max_length=8192 \
+  --exp_id="debug" \
+  --train_ratio="1,1,1,1,1,1"  \
+  --train_dataset="showui-desktop, showui-web, amex, guiact, guiact, guiact,"  \
+  --train_json="hf_train, hf_train, hf_train, hf_train_smartphone, hf_train_web-multi, hf_train_web-single"   \
+  --val_dataset="screenspot"  \
+  --val_json="hf_test"    \
+  --precision="bf16" \
+  --attn_imple="sdpa" \
+  --workers=0 \
+  --lora_r=32 \
+  --lora_alpha=64  \
+  --min_visual_tokens=256  \
+  --max_visual_tokens=1344  \
+  --num_turn=100 \
+  --random_sample \
+  --record_sample \
+  --lr=0.0001 \
+  --uniform_prompt  \
+  --ds_zero="zero2" \
+  --gradient_checkpointing  \
+  --lm_skip_ratio=0.5   \
+  --lm_skip_layer='[1,28,0]'    \
+  --num_history=2    \
   --interleaved_history='tttt'
 ```
 
