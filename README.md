@@ -27,7 +27,7 @@ ShowUI 是一款开源的、端到端、轻量级的视觉-语言-动作模型�
 > <br>Show Lab @ National University of Singapore, Microsoft<br>
 
 ## 🔥 Update
-- [x] [2025.3.2] Support fine-tuning and inference of the lastest base model **Qwen-2.5-VL**.
+- [x] [2025.3.2] Support fine-tuning and inference of the lastest base model **Qwen2.5-VL**.
 - [x] [2025.2.27] ShowUI has been accepted to **CVPR 2025**.
 - [x] [2025.2.13] Support **vllm** inference.
 - [x] [2025.1.20] Support Navigation tasks: Mind2Web, AITW, Miniwob training and evaluator.
