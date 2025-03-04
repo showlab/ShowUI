@@ -14,7 +14,8 @@ sys.path.append('.')
 from data.template import grounding_to_qwen, batch_add_answer, batch_add_answer_append
 
 dataset_mapping = {
-    "showui": "ShowUI-desktop",
+    "showui-desktop": "ShowUI-desktop",
+    "showui-web": "ShowUI-web",
     "amex": "AMEX",
     "rico": "RICO",
     "ricosca": "RICO",
