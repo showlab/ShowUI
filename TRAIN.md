@@ -21,6 +21,11 @@ huggingface-cli download showlab/ShowUI-desktop --repo-type dataset --local-dir 
 huggingface-cli download KevinQHLin/ScreenSpot --repo-type dataset --local-dir .
 ```
 
+### Navigtion datasets
+- Download [GUIAct](https://huggingface.co/datasets/yiye2023/GUIAct) then use our `prepare/hf_guiact.ipynb` to create metadata for each split (i.e., web, mobile).
+
+- Set up Mind2Web, AITW, Miniwob follow [SeeClick's Instruction](https://github.com/njucckevin/SeeClick/blob/main/agent_tasks/readme_agent.md). Then use our `prepare/hf_mind2web/aitw/miniwob.py` to process them and get the metadata.
+
 Then, the dataset should be organized as following:
 ```
 $_DATA_DIR
@@ -50,11 +55,6 @@ $_DATA_DIR
         - images
         - metadata
 ```
-
-### Navigtion datasets
-- Download [GUIAct](https://huggingface.co/datasets/yiye2023/GUIAct) then use our `prepare/hf_guiact.ipynb` to create metadata for each split (i.e., web, mobile).
-
-- Set up Mind2Web, AITW, Miniwob follow [SeeClick's Instruction](https://github.com/njucckevin/SeeClick/blob/main/agent_tasks/readme_agent.md). Then use our `prepare/hf_mind2web/aitw/miniwob.py` to process them and get the metadata.
 
 ## ⚙️Define Dataloader
 You can simply re-use existed implementation of `dset_shared_grounding.py` for UI grounding;
