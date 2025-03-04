@@ -27,7 +27,26 @@ $_DATA_DIR
     - ScreenSpot
         - images
         - metadata
+    - AMEX
+        - images
+        - metadata
+    - ShowUI-web
+        - images
+        - metadata
     - ShowUI-desktop
+        - images
+        - metadata
+    - GUI_Course
+        - GUIAct
+            - images
+            - metadata
+    - Mind2Web
+        - images
+        - metadata
+    - AITW
+        - images
+        - metadata
+    - MiniWob
         - images
         - metadata
 ```
