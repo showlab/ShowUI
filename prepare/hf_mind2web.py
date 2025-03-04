@@ -71,21 +71,21 @@ def data_transform(version='train', mini=False):
     return total_step
 
 if __name__ == "__main__":
-    # for version in ['train']:
-    #     data_transform(version=version)
+    for version in ['train']:
+        data_transform(version=version)
 
-    # test_full = []
-    # for version in ['test_task', 'test_domain', 'test_website']:
-    #     test_full.extend(data_transform(version=version))
-    # save_url = f"{anno_dir}/hf_test_full.json"
-    # with open(save_url, "w") as file:
-    #     json.dump(test_full, file, indent=4)
-
-    # miniset
     test_full = []
     for version in ['test_task', 'test_domain', 'test_website']:
-        test_full.extend(data_transform(version=version, mini=True))
-    
-    save_url = f"{anno_dir}/hf_test_mini.json"
+        test_full.extend(data_transform(version=version))
+    save_url = f"{anno_dir}/hf_test_full.json"
     with open(save_url, "w") as file:
         json.dump(test_full, file, indent=4)
+
+    # miniset
+    # test_full = []
+    # for version in ['test_task', 'test_domain', 'test_website']:
+    #     test_full.extend(data_transform(version=version, mini=True))
+    
+    # save_url = f"{anno_dir}/hf_test_mini.json"
+    # with open(save_url, "w") as file:
+    #     json.dump(test_full, file, indent=4)
