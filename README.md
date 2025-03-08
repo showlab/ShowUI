@@ -66,7 +66,7 @@ See [Gradio](GRADIO.md) for installation.
 ## 🚀 Training
 Our Training codebases supports:
 - [x] Grounding and Navigation training: Mind2Web, AITW, Miniwob
-- [x] Self-customized model: ShowUI, Qwen2VL
+- [x] Self-customized model: ShowUI, Qwen2VL, Qwen2.5VL
 - [x] Efficient Training: DeepSpeed, BF16, QLoRA, SDPA / FlashAttention2, Liger-Kernel
 - [x] Multiple datasets mixed training
 - [x] Interleaved data streaming
