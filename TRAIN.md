@@ -158,6 +158,8 @@ If you want to evaluate on your own setting, you need to define the evaluation f
 
 You should able monitor the training information in wandb panel.
 
+If for evaluation, please apply `eval_only` and change the `--lora_r=0`. Otherwise, the lora will change the model behavior.
+
 ## 〽️Start Navigation Training
 ### **Pretrained on GUI-Act (Optional)**
 The code below utilizes GUI-Act for pre-training a Qwen2VL, followed by evaluation on AITW.
