@@ -250,6 +250,8 @@ deepspeed --include localhost:1 --master_port 5678 train.py \
   --interleaved_history='tttt'
 ```
 
+If for evaluation, please apply `eval_only` and change the `--lora_r=0`. Otherwise, the lora will change the model behavior.
+
 ## 〽️Multi-Task Co-Training
 Below is the instruction to use both grounding and navigation data for co-training. Training on multiple nodes (e.g. 32 GPUs) is recommended.
 
