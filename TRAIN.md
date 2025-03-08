@@ -158,7 +158,7 @@ If you want to evaluate on your own setting, you need to define the evaluation f
 
 You should able monitor the training information in wandb panel.
 
-**Note:** If for evaluation, please apply `eval_only` and change the `--lora_r=0`. Otherwise, the lora will change the model behavior.
+**Note:** If for evaluation, please apply `--eval_only` and change the `--lora_r=0`. Otherwise, the lora will change the model behavior.
 
 ## 〽️Start Navigation Training
 ### **Pretrained on GUI-Act (Optional)**
@@ -252,7 +252,7 @@ deepspeed --include localhost:1 --master_port 5678 train.py \
   --interleaved_history='tttt'
 ```
 
-**Note:** If for evaluation, please apply `eval_only` and change the `--lora_r=0`. Otherwise, the lora will change the model behavior.
+**Note:** If for evaluation, please apply `--eval_only` and change the `--lora_r=0`. Otherwise, the lora will change the model behavior.
 
 ## 〽️Multi-Task Co-Training
 Below is the instruction to use both grounding and navigation data for co-training. Training on multiple nodes (e.g. 32 GPUs) is recommended.
