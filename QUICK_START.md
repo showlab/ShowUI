@@ -133,7 +133,7 @@ action_map = {
 """,
 
 'phone': """
-1. `INPUT`: Type a string into an element, value is not applicable and the position [x,y] is required. 
+1. `INPUT`: Type a string into an element, value is a string to type and the position [x,y] is required. 
 2. `SWIPE`: Swipe the screen, value is not applicable and the position [[x1,y1], [x2,y2]] is the start and end position of the swipe operation.
 3. `TAP`: Tap on an element, value is not applicable and the position [x,y] is required.
 4. `ANSWER`: Answer the question, value is the status (e.g., 'task complete') and the position is not applicable.
