@@ -57,6 +57,43 @@ def find_target_linear_names(model, num_lora_modules=-1, lora_namespan_exclude=[
         print(f"Found {len(lora_module_names)} lora modules: {lora_module_names}")
     return lora_module_names
 
+def load_sharded_weights(weight_dir):
+    """Load sharded weights"""
+    print(f"Loading sharded weights from {weight_dir}")
+    
+    # Check if index file exists
+    index_file = os.path.join(weight_dir, "pytorch_model.bin.index.json")
+    if not os.path.exists(index_file):
+        raise FileNotFoundError(f"Index file not found at {index_file}")
+        
+    # Read index file
+    with open(index_file, 'r') as f:
+        index_data = json.load(f)
+    
+    # Get weight mapping
+    weight_map = index_data['weight_map']
+        
+    # Initialize state dict
+    state_dict = {}
+    # Load weights based on mapping
+    for param_name, filename in weight_map.items():
+        # Load shard containing this parameter
+        shard_path = os.path.join(weight_dir, filename)
+        print(f"Loading weight {param_name} from shard: {filename}")
+        
+        if not os.path.exists(shard_path):
+            raise FileNotFoundError(f"Weight shard not found at {shard_path}")
+            
+         # Load shard
+        shard_state = torch.load(shard_path, map_location="cpu")
+        
+        # Extract parameter from shard
+        if param_name in shard_state:
+            state_dict[param_name] = shard_state[param_name]
+        else:
+            print(f"Warning: Parameter {param_name} not found in shard {filename}")
+    
+    return state_dict
 
 def main(args):
     args = parse_args(args)
@@ -146,17 +183,32 @@ def main(args):
         )
         model = get_peft_model(model, lora_config)
         model.print_trainable_parameters()
+    
+    # Load sharded weights
+        try:
+            print(f"Loading sharded weights from {args.weight_url}")
+            state_dict = load_sharded_weights(args.weight_url)
+            missing_keys, unexpected_keys = model.load_state_dict(state_dict, strict=False)
+            print(f"Loaded weights with {len(missing_keys)} missing keys and {len(unexpected_keys)} unexpected keys")
+        except Exception as e:
+            print(f"Error loading weights: {str(e)}")
+            raise
 
-    state_dict = torch.load(args.weight_url, map_location="cpu")
-    # model.load_state_dict(state_dict, strict=True)
-    model.load_state_dict(state_dict, strict=False)
+    # Merge LoRA weights
+        print("Merging LoRA weights...")
+        model = model.merge_and_unload()
 
-    model = model.merge_and_unload()
-    state_dict = {}
-    for k, v in model.state_dict().items():
-        state_dict[k] = v
-    model.save_pretrained(args.save_path, state_dict=state_dict, safe_serialization=False)
-    processor.save_pretrained(args.save_path)
+        # Save merged model
+        print(f"Saving merged model to {args.save_path}")
+        model.save_pretrained(
+            args.save_path,
+            max_shard_size="10GB",  # Can be adjusted based on requirements
+            safe_serialization=True
+        )
+        processor.save_pretrained(args.save_path)
+
+
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
