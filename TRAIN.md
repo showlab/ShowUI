@@ -204,6 +204,8 @@ deepspeed --include localhost:1 --master_port 5678 train.py \
   --interleaved_history='tttt'
 ```
 
+For Mind2Web AITW zero-shot evaluation, we may encounter action mismatches (e.g., `TYPE`, `INPUT`), leading to unstable scores. To mitigate this, we pretrain on navigation data and monitor intermediate scores throughout pretraining, reporting the best-performing result.
+
 ### **Fine-tuned on Downstream Tasks**
 The code below utilizes downstream training data for fine-tuning our ShowUI.
 
