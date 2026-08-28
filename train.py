@@ -29,6 +29,14 @@ from model.utils import find_target_linear_names
 from data.dataset import HybridDataset, collate_fn
 from data.data_utils import AverageMeter, ProgressMeter, Summary, dict_to_cuda
 from utils.utils import save_args_to_json, create_log_dir
+from packaging.version import Version
+
+def _dtype_kwargs(dtype):
+    """`dtype` keyword of `from_pretrained` exists since transformers 4.56 (PR #39782);
+    older versions use `torch_dtype`."""
+    if Version(transformers.__version__) >= Version("4.56"):
+        return {"dtype": dtype}
+    return {"torch_dtype": dtype}
 
 def env_init(distributed=True):
     print("Init Env for Distributed Training")
@@ -330,7 +338,7 @@ def main(args):
 
         model = ShowUIForConditionalGeneration.from_pretrained(
             model_url,
-            torch_dtype=torch_dtype,
+            **_dtype_kwargs(torch_dtype),
             low_cpu_mem_usage=True,
             _attn_implementation=args.attn_imple,
             quantization_config=bnb_config,
@@ -343,7 +351,7 @@ def main(args):
 
         model = Qwen2VLForConditionalGeneration.from_pretrained(
             model_url,
-            torch_dtype=torch_dtype,
+            **_dtype_kwargs(torch_dtype),
             low_cpu_mem_usage=True,
             _attn_implementation=args.attn_imple,
             quantization_config=bnb_config,
