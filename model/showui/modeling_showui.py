@@ -51,7 +51,7 @@ from transformers.utils import (
     replace_return_docstrings,
 )
 from .configuration_showui import Qwen2VLConfig, Qwen2VLVisionConfig
-from .utils import get_select_mask
+from .utils import get_select_mask, select_attention_mask
 
 if is_flash_attn_2_available():
     from flash_attn import flash_attn_varlen_func
@@ -817,7 +817,7 @@ class Qwen2VLDecoderLayer(nn.Module):
         else:
             self.layer_skip = 0
         self.layer_skip_ratio = getattr(config, "lm_skip_ratio", 0)
-        # self.layer_skip_rand = getattr(config, "skip_rand", False)
+        self.layer_skip_rand = getattr(config, "skip_rand", False)
 
         if config.use_sliding_window and config._attn_implementation != "flash_attention_2":
             logger.warning_once(
@@ -1015,24 +1015,43 @@ class Qwen2VLDecoderLayer(nn.Module):
             if select_mask is not None:
                 retain_mask = select_mask[0]
             else:
-                retain_mask = get_select_mask(patch_pos[0], layer_skip_ratio, rand=(self.training and self.layer_skip_rand)).to(device)
+                retain_mask = get_select_mask(
+                    patch_pos[0], layer_skip_ratio, rand=(self.training and self.layer_skip_rand)
+                ).to(device)
             # retain_mask = get_select_mask(patch_pos[0], layer_skip_ratio, rand=(self.training and self.layer_skip_rand)).to(device)
 
-            selected_hidden_states = hidden_states[:, retain_mask, :]
-            adjusted_position_ids = position_ids[:, :, retain_mask]
-            adjusted_cache_position = cache_position[retain_mask]
+            if retain_mask.dtype == torch.bool:
+                retain_indices = retain_mask.to(device=device).nonzero(as_tuple=True)[0]
+            else:
+                retain_indices = retain_mask.to(device=device, dtype=torch.long)
+            past_length = (
+                int(cache_position[0].item())
+                if cache_position is not None and cache_position.numel()
+                else 0
+            )
+            adjusted_attention_mask = select_attention_mask(
+                attention_mask,
+                retain_mask,
+                sequence_length=hidden_states.shape[1],
+                past_length=past_length,
+                compact_key_axis=not isinstance(past_key_value, StaticCache),
+            )
+
+            selected_hidden_states = hidden_states.index_select(1, retain_indices)
+            adjusted_position_ids = position_ids.index_select(2, retain_indices)
+            adjusted_cache_position = cache_position.index_select(0, retain_indices)
 
             # apply on position embed
             cos, sin = position_embeddings
-            adjusted_cos = cos[:, :, retain_mask]
-            adjusted_sin = sin[:, :, retain_mask]
+            adjusted_cos = cos.index_select(2, retain_indices)
+            adjusted_sin = sin.index_select(2, retain_indices)
             adjusted_position_embeddings = (adjusted_cos, adjusted_sin)
 
             processed_hidden_states = hidden_states.clone()
 
             block_outputs = self.navie_forward(
                 hidden_states=selected_hidden_states,
-                attention_mask=attention_mask,
+                attention_mask=adjusted_attention_mask,
                 position_ids=adjusted_position_ids,
                 past_key_value=past_key_value,
                 output_attentions=output_attentions,
@@ -1043,15 +1062,13 @@ class Qwen2VLDecoderLayer(nn.Module):
                 **kwargs,
             )
             
-            if use_cache:
-                processed_hidden_states[:, retain_mask] = block_outputs[0].flatten(0, 1)
-                present_key_value = block_outputs[1]
-            else:
-                processed_hidden_states[:, retain_mask] = block_outputs[0]
-
             outputs = (processed_hidden_states,)
+            processed_hidden_states.index_copy_(1, retain_indices, block_outputs[0])
+            if output_attentions:
+                outputs += (block_outputs[1],)
             if use_cache:
-                outputs += (present_key_value,)
+                cache_index = 2 if output_attentions else 1
+                outputs += (block_outputs[cache_index],)
 
         else:
             outputs = self.navie_forward(
